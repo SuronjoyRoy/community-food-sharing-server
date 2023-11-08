@@ -27,7 +27,7 @@ async function run() {
     await client.connect();
 
     const foodCollection = client.db('foodDB').collection('foods')
-
+   
 
     app.get('/foods', async(req, res) => {
       const cursor = foodCollection.find();
@@ -41,6 +41,7 @@ async function run() {
       const result = await foodCollection.findOne(query);
       res.send(result)
     })
+
 
 
     app.post('/foods', async(req,res) => {
