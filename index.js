@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config()
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const app =express();
+const app = express();
 const port = process.env.PORT || 4000;
 // middlewire
 
@@ -27,29 +27,69 @@ async function run() {
     await client.connect();
 
     const foodCollection = client.db('foodDB').collection('foods')
-   
+    const foodReqquestCollection = client.db('foodDB').collection('foodReqest')
+    const requestCollection = client.db('reqFoodDB').collection('reqestFood')
 
-    app.get('/foods', async(req, res) => {
+    app.post('/reqestfood', async (req, res) => {
+      const cursor = requestCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    app.get('/reqestfood/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await requestCollection.findOne(query)
+      res.send(result)
+    })
+
+    app.put('/reqestfood/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const options = { upsert: true }
+      const updateDoc = req.body
+      const updateFood = {
+        $set: {
+          photo: updateDoc.photo,
+          Quantity: updateDoc.Quantity,
+          Location: updateDoc.Location,
+          Date: updateDoc.Date
+        }
+      }
+      const result = await requestCollection.updateOne(filter, updateFood, options)
+      res.send(result)
+    })
+
+    app.get('/foods', async (req, res) => {
       const cursor = foodCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     })
 
-    app.get('/foods/:id', async(req, res) => {
+    app.get('/foods/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id:new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const result = await foodCollection.findOne(query);
       res.send(result)
     })
 
 
+    app.post('/food-request', async (req, res) => {
+      try {
+        console.log(req.body)
+      }
+      catch (error) {
+        console.log(error.message)
+      }
 
-    app.post('/foods', async(req,res) => {
+    })
+
+    app.post('/foods', async (req, res) => {
       const newFood = req.body;
       console.log(newFood);
       const result = await foodCollection.insertOne(newFood);
       res.send(result);
-     })
+    })
 
 
 
@@ -65,36 +105,12 @@ run().catch(console.dir);
 
 
 
-app.get('/', (req, res)=>{
-    res.send('food server is running')
+app.get('/', (req, res) => {
+  res.send('food server is running')
 });
 
-app.listen(port, ()=>{
-    console.log(`community food is running on the server${port}`)
+app.listen(port, () => {
+  console.log(`community food is running on the server${port}`)
 })
 
 
-
-
-// const express = require('express');
-// const cors = require('cors');
-// require('dotenv').config();
-// const app = express();
-// const port = process.env.PORT || 5000;
-
-
-// // middlewire
-
-// app.use(express.json())
-// app.use(cors())
-
-
-
-
-// app.get('/', (req, res) => {
-//   res.send('community food sharing server is running')
-// })
-
-// app.listen(port, () => {
-//   console.log(`server is runnung on port ${port}`)
-// })
