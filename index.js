@@ -6,7 +6,9 @@ const app = express();
 const port = process.env.PORT || 4000;
 // middlewire
 
-app.use(cors());
+app.use(cors({
+  origin:['https://various-partner.surge.sh','http://127.0.0.1:5174']
+}));
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.vlvvhig.mongodb.net/?retryWrites=true&w=majority`;
@@ -24,7 +26,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+  
 
     const foodCollection = client.db('foodDB').collection('foods')
     const foodReqquestCollection = client.db('foodDB').collection('foodReqest')
@@ -36,29 +38,29 @@ async function run() {
       res.send(result);
     })
 
-    app.get('/reqestfood/:id', async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) }
-      const result = await requestCollection.findOne(query)
-      res.send(result)
-    })
+    // app.get('/reqestfood/:id', async (req, res) => {
+    //   const id = req.params.id;
+    //   const query = { _id: new ObjectId(id) }
+    //   const result = await requestCollection.findOne(query)
+    //   res.send(result)
+    // })
 
-    app.put('/reqestfood/:id', async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: new ObjectId(id) }
-      const options = { upsert: true }
-      const updateDoc = req.body
-      const updateFood = {
-        $set: {
-          photo: updateDoc.photo,
-          Quantity: updateDoc.Quantity,
-          Location: updateDoc.Location,
-          Date: updateDoc.Date
-        }
-      }
-      const result = await requestCollection.updateOne(filter, updateFood, options)
-      res.send(result)
-    })
+    // app.put('/reqestfood/:id', async (req, res) => {
+    //   const id = req.params.id;
+    //   const filter = { _id: new ObjectId(id) }
+    //   const options = { upsert: true }
+    //   const updateDoc = req.body
+    //   const updateFood = {
+    //     $set: {
+    //       photo: updateDoc.photo,
+    //       Quantity: updateDoc.Quantity,
+    //       Location: updateDoc.Location,
+    //       Date: updateDoc.Date
+    //     }
+    //   }
+    //   const result = await requestCollection.updateOne(filter, updateFood, options)
+    //   res.send(result)
+    // })
 
     app.get('/foods', async (req, res) => {
       const cursor = foodCollection.find();
