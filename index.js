@@ -44,23 +44,6 @@ async function run() {
     //   res.send(result)
     // })
 
-    // app.put('/reqestfood/:id', async (req, res) => {
-    //   const id = req.params.id;
-    //   const filter = { _id: new ObjectId(id) }
-    //   const options = { upsert: true }
-    //   const updateDoc = req.body
-    //   const updateFood = {
-    //     $set: {
-    //       photo: updateDoc.photo,
-    //       Quantity: updateDoc.Quantity,
-    //       Location: updateDoc.Location,
-    //       Date: updateDoc.Date
-    //     }
-    //   }
-    //   const result = await requestCollection.updateOne(filter, updateFood, options)
-    //   res.send(result)
-    // })
-
     app.get('/foods', async (req, res) => {
       const cursor = foodCollection.find();
       const result = await cursor.toArray();
