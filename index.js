@@ -30,7 +30,6 @@ async function run() {
 
     const foodCollection = client.db('foodDB').collection('foods')
     const foodReqquestCollection = client.db('foodDB').collection('foodReqest')
-    const requestCollection = client.db('reqFoodDB').collection('reqestFood')
 
     app.post('/reqestfood', async (req, res) => {
       const cursor = requestCollection.find();
